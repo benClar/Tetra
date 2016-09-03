@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Root for deck builder screen-->
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/activity_display_message"
+        android:id="@+id/activity_deck"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -15,61 +16,4 @@
           android:layout_height="0dp"
           android:visibility="invisible"
           android:layout_centerHorizontal="true"/>
-    <GridLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/player_deck"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignRight="@id/strut"
-            android:columnCount="10"
-            android:horizontalSpacing="10dp"
-            android:verticalSpacing="10dp"
-            android:background="@color/blue"
-            android:rowCount="10"
-    >
-    </GridLayout>
-    <GridLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/chosen_cards"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:columnCount="5"
-            android:horizontalSpacing="10dp"
-            android:verticalSpacing="10dp"
-            android:background="@color/colorAccent"
-            android:rowCount="1"
-            android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@id/player_deck">
-
-    </GridLayout>
-    <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:id="@+id/selected_card"
-            android:layout_toEndOf="@id/player_deck"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/chosen_cards"
-            android:background="@color/yellow">
-        <ImageView android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:src="@drawable/temp_card"
-                   android:padding="20dp"
-        />
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:text="@string/button_deck_start_game"
-        />
-    </RelativeLayout>
 </RelativeLayout>

@@ -8,7 +8,8 @@ package com.android.benjaminclarke.tetra;
 public class Card {
 
     private String name;
-    private int id;
+    private int typeId;
+    private int uniqueId;
     private int arrows;
     private CardElement element;
     private int level;
@@ -18,9 +19,10 @@ public class Card {
     private int magicDefence;
     private CardType type;
 
-    public Card(String name, int id, int arrows, int level, CardElement element, int attack, int magicAttack, int defense, int magicDefence, CardType type){
+    public Card(String name, int typeId, int id, int arrows, int level, CardElement element, int attack, int magicAttack, int defense, int magicDefence, CardType type){
         this.name = name;
-        this.id= id;
+        this.uniqueId= id;
+        this.typeId = typeId;
         this.arrows = arrows;
         this.level = level;
         this.element = element;
@@ -34,7 +36,7 @@ public class Card {
     public Card(){
         // Produces default card
         this.name = "Default";
-        this.id= 999;
+        this.uniqueId= 999;
         this.arrows = 0b11111111;
         this.level = 1;
         this.element = CardElement.EARTH;
@@ -46,7 +48,7 @@ public class Card {
     }
 
     public int getId() {
-        return id;
+        return uniqueId;
     }
 
     public int getArrows() {
@@ -75,5 +77,17 @@ public class Card {
 
     public CardType getType() {
         return type;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getTypeId() {
+        return typeId;
     }
 }
