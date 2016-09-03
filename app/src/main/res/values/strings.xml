@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Tetra</string>
+    <string name="button_mm_game_start">Play</string>
+    <string name="button_mm_game_options">Options</string>
+    <string name="button_mm_store">Store</string>
+    <string name="button_deck_start_game">Done</string>
+
+</resources>
