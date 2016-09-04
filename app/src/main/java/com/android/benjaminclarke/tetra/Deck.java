@@ -54,34 +54,35 @@ public class Deck extends AppCompatActivity {
 
     private void addPlayerCards(LinearLayout playerDeck){
         // get all the players card types and add them to the deck for choosing
-        Card card = new Card(); //TODO: Going to have to add cards in reliable order
+         //TODO: Going to have to add cards in reliable order
         for(int r = 0; r < PLAYER_DECK_HEIGHT; r++){
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
             row.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
             for(int c = 0; c < PLAYER_DECK_WIDTH; c++){
-                row.addView(getCardImage(card));
+                row.addView(getCardImage(10));
             }
             playerDeck.addView(row);
 
         }
     }
 
-    private ImageView getCardImage(Card c){
-        // TODO: lookup and dynamically create card image based on card stats
-        ImageView cardImage = new ImageView(this);
-        cardImage.setImageResource(R.drawable.temp_card);
-        LinearLayout.LayoutParams lp =new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
+    private ImageView getCardImage(int cardTypeId){
+        // TODO: lookup image for card type
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f);
         lp.setMargins(0, 10, 0, 10);
-        cardImage.setLayoutParams(lp);
-        cardImage.setId(c.getTypeId());
-        cardImage.setOnClickListener(new View.OnClickListener() {
+        ImageView cardView = new ImageView(this);
+        cardView.setImageResource(R.drawable.temp_card);
+        cardView.setLayoutParams(lp);
+        cardView.setId(cardTypeId);
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cardChooser.loadCardsOfType(v);
             }
-        });
-        return cardImage;
+        }); //TODO: Use observable for this
+        return cardView;
     }
 
 }

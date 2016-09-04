@@ -1,11 +1,20 @@
 package com.android.benjaminclarke.tetra;
 
+import android.content.Context;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageView;
+
+import java.util.ArrayList;
+import java.util.logging.Logger;
+
 /**
  * Created by benjaminclarke on 03/09/2016.
  */
 
 
-public class Card {
+public class Card extends android.view.GestureDetector.SimpleOnGestureListener {
 
     private String name;
     private int typeId;
@@ -18,8 +27,14 @@ public class Card {
     private int defence;
     private int magicDefence;
     private CardType type;
+    private GestureDetector gestureDetector;
+    private View.OnTouchListener  gestureListener;
+    public ImageView cardView;
+    private Context context;
+    private final static Logger logger = Logger.getLogger(Card.class.getName());
+    private ArrayList<CardObserver> observers;
 
-    public Card(String name, int typeId, int id, int arrows, int level, CardElement element, int attack, int magicAttack, int defense, int magicDefence, CardType type){
+    public Card(String name, int typeId, int id, int arrows, int level, CardElement element, int attack, int magicAttack, int defense, int magicDefence, CardType type, ImageView cardView, Context context){
         this.name = name;
         this.uniqueId= id;
         this.typeId = typeId;
@@ -31,9 +46,20 @@ public class Card {
         this.defence = defense;
         this.magicDefence = magicDefence;
         this.type = type;
+        this.cardView = cardView;
+        this.context = context;
+        gestureDetector = new GestureDetector(this.context, this);
+        gestureListener = new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+        cardView.setOnTouchListener(gestureListener);
+        observers = new ArrayList<>();
     }
 
-    public Card(){
+
+    public Card(Context context){
         // Produces default card
         this.name = "Default";
         this.uniqueId= 999;
@@ -45,6 +71,17 @@ public class Card {
         this.defence = 10;
         this.magicDefence = 10;
         this.type = CardType.ATTACK;
+        this.cardView = new ImageView(context);
+        this.cardView.setImageResource(R.drawable.temp_card_pink);
+        this.context = context;
+        gestureDetector = new GestureDetector(this.context, this);
+        gestureListener = new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+        cardView.setOnTouchListener(gestureListener);
+        observers = new ArrayList<>();
     }
 
     public int getId() {
@@ -90,4 +127,34 @@ public class Card {
     public int getTypeId() {
         return typeId;
     }
+
+    public boolean onDown(MotionEvent e)
+    {
+        return true;
+    }
+
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        logger.info("Swipe on Card");
+        for(CardObserver observer : observers){
+            observer.cardSwipe(this, e1, e2, velocityX, velocityY);
+        }
+        return true;
+    }
+
+    public boolean onSingleTapConfirmed(MotionEvent e){
+        logger.info("Tap on Card");
+        for(CardObserver observer : observers){
+            observer.cardTap(this, e);
+        }
+        return true;
+    }
+
+    public void registerObserver(CardObserver cardObserver){
+        observers.add(cardObserver);
+    }
+
+    public void deRegisterObserver(CardObserver cardObserver){
+        observers.remove(cardObserver);
+    }
+
 }
