@@ -7,19 +7,28 @@ import android.view.ViewGroup;
 import android.widget.*;
 import android.view.ViewGroup.LayoutParams;
 
+import java.util.logging.Logger;
+
 public class Deck extends AppCompatActivity {
 
+    private final static Logger logger = Logger.getLogger(Deck.class.getName());
     private static int PLAYER_DECK_WIDTH = 10;
     private static int PLAYER_DECK_HEIGHT = 10;
     private CardChooser cardChooser;
+    private CardHolder chosenDeck;
+    private LinearLayout playerDeckView; // all types of cards to choose
+    private RelativeLayout cardChooserView; // UI for selecting card of chosen type
+    private LinearLayout chosenDeckView; // cards that player has chosen to play with
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deck);
         RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.activity_deck);
-        LinearLayout playerDeckView = (LinearLayout) getLayoutInflater().inflate(R.layout.player_deck, rootLayout, false);
 
-        RelativeLayout cardChooserView = (RelativeLayout) getLayoutInflater().inflate(R.layout.card_chooser, rootLayout, false);
+        playerDeckView = (LinearLayout) getLayoutInflater().inflate(R.layout.player_deck, rootLayout, false);
+
+        cardChooserView = (RelativeLayout) getLayoutInflater().inflate(R.layout.card_chooser, rootLayout, false);
 
         RelativeLayout.LayoutParams cardChooserViewP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -27,10 +36,15 @@ public class Deck extends AppCompatActivity {
         cardChooserViewP.addRule(RelativeLayout.END_OF, R.id.strut);
         cardChooserView.setLayoutParams(cardChooserViewP);
 
-        LinearLayout chosenDeckView = (LinearLayout) getLayoutInflater().inflate(R.layout.chosen_deck, rootLayout, false);
+        chosenDeckView = (LinearLayout) getLayoutInflater().inflate(R.layout.chosen_deck, rootLayout, false);
 
 
-        cardChooser = new CardChooser(cardChooserView);
+        chosenDeck = new ChosenDeckCardHolder(5, chosenDeckView, this);
+
+        Thread t = new Thread(chosenDeck);
+        t.start();
+
+        cardChooser = new CardChooser(cardChooserView, this, chosenDeck);
 
         addPlayerCards(playerDeckView);
         rootLayout.addView(playerDeckView);
@@ -64,7 +78,7 @@ public class Deck extends AppCompatActivity {
         cardImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cardChooser.addCard(v);
+                cardChooser.loadCardsOfType(v);
             }
         });
         return cardImage;

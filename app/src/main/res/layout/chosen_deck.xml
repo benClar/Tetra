@@ -7,10 +7,6 @@
         android:layout_height="100dp"
         android:layout_alignParentEnd="true"
         android:layout_alignStart="@id/strut"
-        android:columnCount="5"
-        android:horizontalSpacing="10dp"
-        android:verticalSpacing="10dp"
         android:background="@color/colorAccent"
-        android:rowCount="1"
         >
 </LinearLayout>
