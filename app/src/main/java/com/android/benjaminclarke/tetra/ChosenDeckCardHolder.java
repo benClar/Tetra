@@ -2,10 +2,12 @@ package com.android.benjaminclarke.tetra;
 
 import android.app.Activity;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.util.Queue;
 import java.util.logging.Logger;
 
 /**
@@ -16,6 +18,7 @@ public class ChosenDeckCardHolder extends CardHolder implements CardObserver {
     private final static Logger logger = Logger.getLogger(CardHolder.class.getName());
     private LinearLayout chosenDeckView;
     private Activity activity;
+    private Queue<Card> outgoingCards;
 
     public ChosenDeckCardHolder(int limit, LinearLayout chosenDeckView, Activity activity) {
         super(limit);
@@ -28,29 +31,39 @@ public class ChosenDeckCardHolder extends CardHolder implements CardObserver {
         while(true){
             try {
                 Thread.sleep(100);
-                Card c = incomingCards.poll(); // check if card has been selected and sent over
+                final Card c = incomingCards.poll(); // check if card has been selected and sent over
                 if(c != null){
                     c.registerObserver(this);
                     logger.info("New card to be added to chosen");
                     heldCards.add(c);
-                    final ImageView newC = new ImageView(chosenDeckView.getContext());
-                    newC.setImageResource(R.drawable.temp_card_pink);
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-                    newC.setLayoutParams(lp);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            chosenDeckView.addView(newC);
+                            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+                            c.cardView.setLayoutParams(lp);
+                            chosenDeckView.addView(c.cardView);
                         }
                     });
-
                 }
             } catch (InterruptedException e) {
                 break;
             }
         }
     }
-    public void cardSwipe(Card card, MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+    @Override
+    public void removeCard(Card c){
+        super.removeCard(c);
+        View cardView = chosenDeckView.findViewById(c.getId());
+        ((ViewGroup) cardView.getParent()).removeView(cardView);
+    }
+
+    public void cardSwipe(Card card, Direction d) {
+        logger.info("Deck Card Swiped");
+        if(d == Direction.UP || d == Direction.DOWN){
+            this.heldCards.remove(card);
+            this.addCard(card);
+        }
 
     }
 
@@ -58,8 +71,7 @@ public class ChosenDeckCardHolder extends CardHolder implements CardObserver {
 
     }
 
-    public void cardToss(Card card){
-        logger.info("remove card from chosen deck");
+    public void setOutgoingCardsQueue(Queue<Card> outgoingCards){
+        this.outgoingCards = outgoingCards;
     }
-
 }

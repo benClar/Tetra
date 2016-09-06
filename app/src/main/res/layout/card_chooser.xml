@@ -10,12 +10,6 @@ android:id="@+id/card_chooser"
 android:layout_alignParentEnd="true"
 android:layout_alignParentBottom="true"
 android:background="@color/yellow">
-<ImageView android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:src="@drawable/temp_card"
-           android:id="@+id/selected_card"
-           android:padding="20dp"
-/>
 <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

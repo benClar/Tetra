@@ -15,7 +15,7 @@ public class Deck extends AppCompatActivity {
     private static int PLAYER_DECK_WIDTH = 10;
     private static int PLAYER_DECK_HEIGHT = 10;
     private CardChooser cardChooser;
-    private CardHolder chosenDeck;
+    private ChosenDeckCardHolder chosenDeck;
     private LinearLayout playerDeckView; // all types of cards to choose
     private RelativeLayout cardChooserView; // UI for selecting card of chosen type
     private LinearLayout chosenDeckView; // cards that player has chosen to play with

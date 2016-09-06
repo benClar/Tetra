@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -34,6 +35,7 @@ public class Card extends android.view.GestureDetector.SimpleOnGestureListener {
     private final static Logger logger = Logger.getLogger(Card.class.getName());
     private ArrayList<CardObserver> observers;
 
+
     public Card(String name, int typeId, int id, int arrows, int level, CardElement element, int attack, int magicAttack, int defense, int magicDefence, CardType type, ImageView cardView, Context context){
         this.name = name;
         this.uniqueId= id;
@@ -47,6 +49,7 @@ public class Card extends android.view.GestureDetector.SimpleOnGestureListener {
         this.magicDefence = magicDefence;
         this.type = type;
         this.cardView = cardView;
+        this.cardView.setId(this.uniqueId);
         this.context = context;
         gestureDetector = new GestureDetector(this.context, this);
         gestureListener = new View.OnTouchListener() {
@@ -62,7 +65,7 @@ public class Card extends android.view.GestureDetector.SimpleOnGestureListener {
     public Card(Context context){
         // Produces default card
         this.name = "Default";
-        this.uniqueId= 999;
+        this.uniqueId= new Random().nextInt(999999999);
         this.arrows = 0b11111111;
         this.level = 1;
         this.element = CardElement.EARTH;
@@ -73,6 +76,7 @@ public class Card extends android.view.GestureDetector.SimpleOnGestureListener {
         this.type = CardType.ATTACK;
         this.cardView = new ImageView(context);
         this.cardView.setImageResource(R.drawable.temp_card_pink);
+        this.cardView.setId(this.uniqueId);
         this.context = context;
         gestureDetector = new GestureDetector(this.context, this);
         gestureListener = new View.OnTouchListener() {
@@ -128,6 +132,10 @@ public class Card extends android.view.GestureDetector.SimpleOnGestureListener {
         return typeId;
     }
 
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
     public boolean onDown(MotionEvent e)
     {
         return true;
@@ -135,8 +143,10 @@ public class Card extends android.view.GestureDetector.SimpleOnGestureListener {
 
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         logger.info("Swipe on Card");
+        Direction d = MyUtils.coordsToDirections(e1, e2);
+        logger.info(d.toString());
         for(CardObserver observer : observers){
-            observer.cardSwipe(this, e1, e2, velocityX, velocityY);
+            observer.cardSwipe(this, d);
         }
         return true;
     }

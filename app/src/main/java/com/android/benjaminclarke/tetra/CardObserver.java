@@ -8,6 +8,5 @@ import android.view.MotionEvent;
 public interface CardObserver {
 
     void cardTap(Card c, MotionEvent e);
-    void cardSwipe(Card c, MotionEvent e1, MotionEvent e2, float velocityX, float velocityY);
-    void cardToss(Card c);
+    void cardSwipe(Card c, Direction direction);
 }
