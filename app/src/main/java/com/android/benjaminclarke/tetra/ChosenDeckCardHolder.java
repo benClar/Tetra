@@ -18,7 +18,7 @@ public class ChosenDeckCardHolder extends CardHolder implements CardObserver {
     private final static Logger logger = Logger.getLogger(CardHolder.class.getName());
     private LinearLayout chosenDeckView;
     private Activity activity;
-    private Queue<Card> outgoingCards;
+    private CardHolder outgoingCards;
 
     public ChosenDeckCardHolder(int limit, LinearLayout chosenDeckView, Activity activity) {
         super(limit);
@@ -41,6 +41,7 @@ public class ChosenDeckCardHolder extends CardHolder implements CardObserver {
                         public void run() {
                             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
                             c.cardView.setLayoutParams(lp);
+                            c.cardView.setPadding(0,0,0,0);
                             chosenDeckView.addView(c.cardView);
                         }
                     });
@@ -51,18 +52,19 @@ public class ChosenDeckCardHolder extends CardHolder implements CardObserver {
         }
     }
 
-    @Override
     public void removeCard(Card c){
-        super.removeCard(c);
+        logger.info("Removing Card from chosen deck");
         View cardView = chosenDeckView.findViewById(c.getId());
         ((ViewGroup) cardView.getParent()).removeView(cardView);
+        c.deRegisterObserver(this);
+        this.heldCards.remove(c);
+        this.outgoingCards.addCard(c);
     }
 
     public void cardSwipe(Card card, Direction d) {
         logger.info("Deck Card Swiped");
         if(d == Direction.UP || d == Direction.DOWN){
-            this.heldCards.remove(card);
-            this.addCard(card);
+            removeCard(card);
         }
 
     }
@@ -71,7 +73,7 @@ public class ChosenDeckCardHolder extends CardHolder implements CardObserver {
 
     }
 
-    public void setOutgoingCardsQueue(Queue<Card> outgoingCards){
+    public void setOutgoingCardsQueue(CardHolder outgoingCards){
         this.outgoingCards = outgoingCards;
     }
 }

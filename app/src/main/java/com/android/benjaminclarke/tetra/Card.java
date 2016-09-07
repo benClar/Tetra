@@ -67,6 +67,7 @@ public class Card extends android.view.GestureDetector.SimpleOnGestureListener {
         this.name = "Default";
         this.uniqueId= new Random().nextInt(999999999);
         this.arrows = 0b11111111;
+        this.typeId = 1;
         this.level = 1;
         this.element = CardElement.EARTH;
         this.attack = 10;
@@ -87,6 +88,7 @@ public class Card extends android.view.GestureDetector.SimpleOnGestureListener {
         cardView.setOnTouchListener(gestureListener);
         observers = new ArrayList<>();
     }
+
 
     public int getId() {
         return uniqueId;

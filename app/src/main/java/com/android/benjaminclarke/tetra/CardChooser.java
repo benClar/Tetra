@@ -24,36 +24,36 @@ public class CardChooser extends CardHolder implements CardObserver{
     private Context c;
     private final static Logger logger = Logger.getLogger(CardChooser.class.getName());
     private ChosenDeckCardHolder chosenCards;
-    private int selectedCardIndex; // element of currently selected card
     private Card selectedCard;
+
     public CardChooser(RelativeLayout cardChooserView, Context context, ChosenDeckCardHolder chosenCards)    {
         super();
         this.cardChooserView = cardChooserView;
         this.c=context;
         this.chosenCards = chosenCards;
-        this.selectedCardIndex = 0;
-        this.chosenCards.setOutgoingCardsQueue(this.incomingCards);
-        this.selectedCard = new Card(c); // default card
-        selectCard(selectedCard);
+        this.chosenCards.setOutgoingCardsQueue(this);
+        this.selectedCard = null;
+        Card defaultCard = new Card(c);
+        loadSelectCard(defaultCard);
+        addCard(defaultCard);
     }
 
     public void loadCardsOfType(View v){
         //TODO: Using the id, get all cards and load them up using c.getId().
         //Then select the first one as the selected card and register to it.
         Card card = new Card(c); // for now.  Here is where we're going to load card objects with correct images.
-        selectCard(card);
+        loadSelectCard(card); // done for single card
+        addCard(card);  // done for all cards of type
     }
 
-    private void selectCard(Card newCard){
+    private void loadSelectCard(Card newCard){
         //TODO: need to do the removing etc. of currently selected card
         logger.info("Setting new card");
+        removeSelectedCard();
         newCard.registerObserver(this);
-        addCard(newCard);
         configureSelectedCard(newCard.cardView);
         selectedCard = newCard;
         cardChooserView.addView(newCard.cardView);
-        removeCard(newCard);
-//        newC.setOnTouchListener(gestureListener);
     }
 
     private void configureSelectedCard(ImageView cardView){
@@ -97,30 +97,20 @@ public class CardChooser extends CardHolder implements CardObserver{
 
     @Override
     public void run() {
-        while(true){
-            try {
+        try {
+            while (true) {
                 Thread.sleep(100);
                 super.run();
-//                Card c = incomingCards.poll(); // check if card has been selected and sent over
-//                if(c != null){
-//                    c.registerObserver(this);
-//                    logger.info("New card to be added to chosen");
-//                    heldCards.add(c);
-//                    final ImageView newC = new ImageView(chosenDeckView.getContext());
-//                    newC.setImageResource(R.drawable.temp_card_pink);
-//                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-//                    newC.setLayoutParams(lp);
-//                    activity.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            chosenDeckView.addView(newC);
-//                        }
-//                    });
-//
-//                }
-            } catch (InterruptedException e) {
-                break;
+                Card c = incomingCards.poll(); // check if card has been selected and sent over
+                if (c != null) {
+                    logger.info("New card added to card chooser");
+                    if(this.selectedCard.getTypeId() == c.getTypeId()){
+                        heldCards.add(c);
+                    }
+                }
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
