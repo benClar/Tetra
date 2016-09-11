@@ -1,11 +1,14 @@
 package com.android.benjaminclarke.tetra;
 
 import android.app.Activity;
+import android.content.Context;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.Queue;
 import java.util.logging.Logger;
@@ -20,9 +23,13 @@ public class ChosenDeckCardHolder extends CardHolder implements CardObserver {
     private Activity activity;
     private CardHolder outgoingCards;
 
-    public ChosenDeckCardHolder(int limit, LinearLayout chosenDeckView, Activity activity) {
+    public LinearLayout getChosenDeckView() {
+        return chosenDeckView;
+    }
+
+    public ChosenDeckCardHolder(int limit, Activity activity, RelativeLayout rootLayout) {
         super(limit);
-        this.chosenDeckView = chosenDeckView;
+        this.chosenDeckView = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.chosen_deck, rootLayout, false);
         this.activity = activity;
     }
 

@@ -26,16 +26,26 @@ public class CardChooser extends CardHolder implements CardObserver{
     private ChosenDeckCardHolder chosenCards;
     private Card selectedCard;
 
-    public CardChooser(RelativeLayout cardChooserView, Context context, ChosenDeckCardHolder chosenCards)    {
+    public CardChooser(Context context, RelativeLayout rootLayout,ChosenDeckCardHolder chosenCards)    {
         super();
-        this.cardChooserView = cardChooserView;
-        this.c=context;
+        this.cardChooserView = (RelativeLayout) ((Activity) context).getLayoutInflater().inflate(R.layout.card_chooser, rootLayout, false);
+        RelativeLayout.LayoutParams cardChooserViewP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        cardChooserViewP.addRule(RelativeLayout.BELOW, R.id.chosen_deck);
+        cardChooserViewP.addRule(RelativeLayout.END_OF, R.id.strut);
+        cardChooserView.setLayoutParams(cardChooserViewP);
+        this.c = context;
         this.chosenCards = chosenCards;
         this.chosenCards.setOutgoingCardsQueue(this);
         this.selectedCard = null;
         Card defaultCard = new Card(c);
         loadSelectCard(defaultCard);
         addCard(defaultCard);
+    }
+
+
+    public RelativeLayout getCardChooserView() {
+        return cardChooserView;
     }
 
     public void loadCardsOfType(View v){
@@ -104,9 +114,9 @@ public class CardChooser extends CardHolder implements CardObserver{
                 Card c = incomingCards.poll(); // check if card has been selected and sent over
                 if (c != null) {
                     logger.info("New card added to card chooser");
-                    if(this.selectedCard.getTypeId() == c.getTypeId()){
-                        heldCards.add(c);
-                    }
+//                    if(this.selectedCard.getTypeId() == c.getTypeId()){ //TODO: lets ignore these for now
+//                        heldCards.add(c);
+//                    }
                 }
             }
         } catch (InterruptedException e) {

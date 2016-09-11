@@ -14,11 +14,9 @@ public class Deck extends AppCompatActivity {
     private final static Logger logger = Logger.getLogger(Deck.class.getName());
     private static int PLAYER_DECK_WIDTH = 10;
     private static int PLAYER_DECK_HEIGHT = 10;
-    private CardChooser cardChooser;
-    private ChosenDeckCardHolder chosenDeck;
+    private CardChooser cardChooser; // UI for selecting card of chosen type
+    private ChosenDeckCardHolder chosenDeck; // cards that player had chosen
     private LinearLayout playerDeckView; // all types of cards to choose
-    private RelativeLayout cardChooserView; // UI for selecting card of chosen type
-    private LinearLayout chosenDeckView; // cards that player has chosen to play with
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,28 +26,18 @@ public class Deck extends AppCompatActivity {
 
         playerDeckView = (LinearLayout) getLayoutInflater().inflate(R.layout.player_deck, rootLayout, false);
 
-        cardChooserView = (RelativeLayout) getLayoutInflater().inflate(R.layout.card_chooser, rootLayout, false);
+        chosenDeck = new ChosenDeckCardHolder(5, this, rootLayout);
+        Thread chosenDeckThread = new Thread(chosenDeck);
+        chosenDeckThread.start();
 
-        RelativeLayout.LayoutParams cardChooserViewP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        cardChooserViewP.addRule(RelativeLayout.BELOW, R.id.chosen_deck);
-        cardChooserViewP.addRule(RelativeLayout.END_OF, R.id.strut);
-        cardChooserView.setLayoutParams(cardChooserViewP);
-
-        chosenDeckView = (LinearLayout) getLayoutInflater().inflate(R.layout.chosen_deck, rootLayout, false);
-
-
-        chosenDeck = new ChosenDeckCardHolder(5, chosenDeckView, this);
-
-        Thread t = new Thread(chosenDeck);
-        t.start();
-
-        cardChooser = new CardChooser(cardChooserView, this, chosenDeck);
+        cardChooser = new CardChooser(this, rootLayout, chosenDeck);
+        Thread cardChooserThread = new Thread(chosenDeck);
+        cardChooserThread.start();
 
         addPlayerCards(playerDeckView);
         rootLayout.addView(playerDeckView);
-        rootLayout.addView(chosenDeckView);
-        rootLayout.addView(cardChooserView);
+        rootLayout.addView(cardChooser.getCardChooserView());
+        rootLayout.addView(chosenDeck.getChosenDeckView());
     }
 
     private void addPlayerCards(LinearLayout playerDeck){
